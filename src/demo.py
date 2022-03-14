@@ -28,10 +28,10 @@ params.calib.cu = 609.5593
 params.calib.cv = 172.854
 params.base     = 0.537
 
-# initialize visual odometry 
-# viso = viso2.VisualOdometryStereo(params)
-# recon = viso2.Reconstruction()
-# recon.setCalibration(params.calib.f, params.calib.cu, params.calib.cv)
+#initialize visual odometry 
+viso = viso2.VisualOdometryStereo(params)
+recon = viso2.Reconstruction()
+recon.setCalibration(params.calib.f, params.calib.cu, params.calib.cv)
 matcher_params = viso2.Matcher_parameters()
 
 matcher_params.f = 721.5377
@@ -84,32 +84,32 @@ for i in range(N):
                 matches_mat[:, i] = (m.u1p, m.v1p, m.u2p, m.v2p,m.u1c,m.v1c,m.u2c,m.v2c)
         
 
-    # if viso.process_frame(left_img, right_img):
-    #     motion = viso.getMotion()
-    #     est_motion = viso2.Matrix_inv(motion)
-    #     pose = pose * est_motion
+    if viso.process_frame(left_img, right_img):
+        motion = viso.getMotion()
+        est_motion = viso2.Matrix_inv(motion)
+        pose = pose * est_motion
 
-    #     num_matches = viso.getNumberOfMatches()
-    #     num_inliers = viso.getNumberOfInliers()
-    #     print('Matches:', num_matches, "Inliers:", 100*num_inliers/num_matches, '%, Current pose:')
-    #     print(pose)
+        num_matches = viso.getNumberOfMatches()
+        num_inliers = viso.getNumberOfInliers()
+        print('Matches:', num_matches, "Inliers:", 100*num_inliers/num_matches, '%, Current pose:')
+        print(pose)
 
-    #     matches = viso.getMatches()
-    #     matches_mat = np.empty([2, matches.size()])
-        
-    #     matches_mat
+        matches = viso.getMatches()
+        matches_mat = np.empty([2, matches.size()])
+      
+        matches_mat
 
-    #     assert(matches.size() == num_matches)
-    #     recon.update(matches, motion, 0)
-    # else:
-    #     print('.... failed!')
+        assert(matches.size() == num_matches)
+        recon.update(matches, motion, 0)
+    else:
+        print('.... failed!')
 
-# points = recon.getPoints()
-# print("Reconstructed", points.size(), "points...")
+points = recon.getPoints()
+print("Reconstructed", points.size(), "points...")
 
-# pts = np.empty((points.size(),3))
-# for i,p in enumerate(points):
-#     pts[i,:] = (p.x, p.y, p.z)
+pts = np.empty((points.size(),3))
+for i,p in enumerate(points):
+    pts[i,:] = (p.x, p.y, p.z)
 
 #mlab.figure()
 #mlab.points3d(pts[:,0], pts[:,1], pts[:,2], colormap='copper')
